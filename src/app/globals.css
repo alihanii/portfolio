@@ -1,0 +1,264 @@
+@import "tailwindcss";
+
+/* Theme tokens. The accent is set at runtime by the dock (and by the inline
+   boot script before first paint), everything else follows the theme. */
+:root {
+  --accent: #ef3b2d;
+  --accent-rgb: 239 59 45;
+  --bg: #070505;
+  --bg-rgb: 7 5 5;
+  --fg: #f6efe9;
+  --muted: #b9aca4;
+  --card: rgb(24 16 15 / 0.42);
+  --card-strong: rgb(24 16 15 / 0.62);
+  --border: rgb(255 240 230 / 0.1);
+  --border-strong: rgb(255 240 230 / 0.18);
+  --shadow: 0 24px 60px -24px rgb(0 0 0 / 0.75);
+  --canvas-blend: screen;
+  --glow-strength: 0.55;
+  --tint-strength: 0.5;
+  --font-display: var(--font-syne), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #efe8e2;
+  --bg-rgb: 239 232 226;
+  --fg: #1d1513;
+  --muted: #5e504a;
+  --card: rgb(255 250 246 / 0.55);
+  --card-strong: rgb(255 250 246 / 0.78);
+  --border: rgb(40 20 15 / 0.1);
+  --border-strong: rgb(40 20 15 / 0.18);
+  --shadow: 0 24px 60px -28px rgb(60 30 20 / 0.35);
+  --canvas-blend: normal;
+  --glow-strength: 0.35;
+  --tint-strength: 0.35;
+  color-scheme: light;
+}
+
+:root[lang="fa"] {
+  --font-display: var(--font-vazir), system-ui, sans-serif;
+  --font-body: var(--font-vazir), system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-accent: var(--accent);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font-body);
+  overflow-x: clip;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+::selection {
+  background: rgb(var(--accent-rgb) / 0.35);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ---------- Stage: ambient glow, face canvas, accent tint ---------- */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.stage-glow {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(40% 55% at 22% 42%, rgb(var(--accent-rgb) / var(--glow-strength)), transparent 70%),
+    radial-gradient(35% 45% at 82% 28%, rgb(var(--accent-rgb) / calc(var(--glow-strength) * 0.35)), transparent 70%);
+  filter: blur(30px);
+  transition: background 0.6s ease;
+}
+
+.stage-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: var(--canvas-blend);
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.stage-canvas[data-ready="true"] {
+  opacity: 1;
+}
+
+:root[data-theme="light"] .stage-canvas {
+  -webkit-mask-image: radial-gradient(ellipse 46% 62% at 50% 46%, #000 52%, transparent 100%);
+  mask-image: radial-gradient(ellipse 46% 62% at 50% 46%, #000 52%, transparent 100%);
+}
+
+/* Re-lights the red rim light in the video with the chosen accent. */
+.stage-tint {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(45% 70% at 18% 45%, rgb(var(--accent-rgb) / 1), transparent 75%),
+    radial-gradient(30% 50% at 85% 35%, rgb(var(--accent-rgb) / 0.6), transparent 75%);
+  mix-blend-mode: color;
+  opacity: var(--tint-strength);
+  transition: background 0.6s ease;
+}
+
+/* Keeps text readable at the edges without hiding the face. */
+.stage-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgb(var(--bg-rgb) / 0.55), transparent 22%, transparent 70%, rgb(var(--bg-rgb) / 0.85)),
+    radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgb(var(--bg-rgb) / 0.7));
+}
+
+.stage-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+@utility glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: var(--shadow), inset 0 1px 0 rgb(255 255 255 / 0.04);
+  border-radius: 1.25rem;
+  transition: border-color 0.3s ease, background-color 0.5s ease, transform 0.3s ease;
+  &:hover {
+    border-color: rgb(var(--accent-rgb) / 0.35);
+  }
+}
+
+@utility glass-strong {
+  background: var(--card-strong);
+}
+
+@layer components {
+/* ---------- Frosted cards ---------- */
+
+.accent-text {
+  color: var(--accent);
+  transition: color 0.4s ease;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--fg);
+  background: rgb(var(--bg-rgb) / 0.25);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+:root[lang="fa"] .eyebrow {
+  letter-spacing: 0;
+  font-size: 0.8125rem;
+}
+
+.dot-accent {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgb(var(--accent-rgb) / 0.8);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 10px 30px -10px rgb(var(--accent-rgb) / 0.8);
+}
+.btn-accent:hover {
+  filter: brightness(1.08);
+}
+.btn-ghost {
+  border: 1px solid var(--border-strong);
+  background: rgb(var(--bg-rgb) / 0.3);
+  color: var(--fg);
+}
+.btn-ghost:hover {
+  border-color: rgb(var(--accent-rgb) / 0.5);
+}
+
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
