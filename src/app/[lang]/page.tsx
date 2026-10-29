@@ -134,7 +134,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
           </a>
         </div>
         <div className="mx-auto mt-2 h-px max-w-[1380px] overflow-hidden" aria-hidden="true">
-          <div className="h-full origin-left bg-accent rtl:origin-right" style={{ transform: "scaleX(var(--progress, 0))" }} />
+          <div data-progress className="h-full origin-left scale-x-0 bg-accent will-change-transform rtl:origin-right" />
         </div>
       </header>
 
@@ -144,7 +144,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
           <div className="grid gap-6 md:grid-cols-12 md:items-start">
             <div className="md:col-span-5 lg:col-span-4" data-reveal>
               <p className="eyebrow mb-3">{r.hero.eyebrow}</p>
-              <h1 id="hero-title" className="font-display text-[clamp(3rem,7.4vw,6.75rem)] font-extrabold leading-[0.95] tracking-tight">
+              <h1 id="hero-title" className="font-display text-[clamp(2.25rem,10.5vw,6.75rem)] md:text-[clamp(3rem,7.4vw,6.75rem)] font-extrabold leading-[0.95] tracking-tight">
                 {r.hero.line1}
                 <br />
                 <span className="accent-text">{r.hero.line2}</span>
@@ -339,7 +339,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
           <div className="grid gap-[24vh] md:grid-cols-12 md:items-end md:gap-6">
             <div className="md:col-span-5 lg:col-span-4" data-reveal>
               <p className="eyebrow mb-3 tabular-nums">{r.contact.index}</p>
-              <h2 id="contact-title" className="font-display text-[clamp(2.75rem,6vw,5.5rem)] font-extrabold leading-[0.95] tracking-tight">
+              <h2 id="contact-title" className="font-display text-[clamp(2.25rem,10vw,5.5rem)] md:text-[clamp(2.75rem,6vw,5.5rem)] font-extrabold leading-[0.95] tracking-tight">
                 {r.contact.title}
               </h2>
               <p className="mt-4 max-w-sm leading-relaxed text-muted">{r.contact.body}</p>
@@ -361,7 +361,11 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
               <div className="glass flex items-center justify-between gap-3 p-5" data-reveal>
                 <div>
                   <p className="eyebrow">{r.education.title}</p>
-                  <p className="mt-1 text-sm font-semibold">{r.education.degree}</p>
+                  <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
+                    <span className="dot-accent size-1.5" aria-hidden="true" />
+                    {r.education.masters}
+                  </p>
+                  <p className="mt-2 text-sm font-semibold">{r.education.degree}</p>
                   <p className="text-sm text-muted">{r.education.school}</p>
                 </div>
               </div>

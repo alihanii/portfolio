@@ -20,9 +20,6 @@
     },
     "downloadCv": "Download CV",
     "letsTalk": "Let's talk",
-    "theme": "Theme",
-    "dark": "Dark",
-    "light": "Light",
     "accent": "Accent",
     "customAccent": "Custom color",
     "language": "فارسی",
@@ -339,7 +336,8 @@
   "education": {
     "title": "Education",
     "school": "Islamic Azad University, Qom",
-    "degree": "B.Sc. in Software Engineering"
+    "degree": "B.Sc. in Software Engineering",
+    "masters": "Master's student in Software Engineering"
   },
   "contact": {
     "index": "05",

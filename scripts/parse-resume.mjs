@@ -40,7 +40,7 @@ const Content = z.object({
     title: z.string(),
     items: z.array(z.object({ name: z.string(), description: z.string(), tags: z.array(z.string()), url: z.string(), linkLabel: z.string() })),
   }),
-  education: z.object({ title: z.string(), school: z.string(), degree: z.string() }),
+  education: z.object({ title: z.string(), school: z.string(), degree: z.string(), masters: z.string() }),
 });
 const Output = z.object({ fa: Content, en: Content });
 

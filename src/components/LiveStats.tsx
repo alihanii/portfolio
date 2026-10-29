@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { StageDetail } from "./ScrollStage";
 
 /** Live numbers from the canvas, shown in the "under the hood" card. */
 export default function LiveStats({ labels, locale }: { labels: { frame: string; fps: string; loaded: string }; locale: string }) {
+  const ref = useRef<HTMLDListElement>(null);
   const [s, setS] = useState<StageDetail>({ frame: 0, total: 120, loaded: 0, fps: 60 });
 
   useEffect(() => {
@@ -18,8 +19,14 @@ export default function LiveStats({ labels, locale }: { labels: { frame: string;
           if (latest) setS(latest);
         });
     };
-    window.addEventListener("stage:frame", on);
+    // Only re-render while the card is on screen.
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) window.addEventListener("stage:frame", on);
+      else window.removeEventListener("stage:frame", on);
+    });
+    if (ref.current) io.observe(ref.current);
     return () => {
+      io.disconnect();
       window.removeEventListener("stage:frame", on);
       cancelAnimationFrame(raf);
     };
@@ -33,7 +40,7 @@ export default function LiveStats({ labels, locale }: { labels: { frame: string;
   ];
 
   return (
-    <dl className="grid grid-cols-3 gap-2">
+    <dl ref={ref} className="grid grid-cols-3 gap-2">
       {items.map((it) => (
         <div key={it.label} className="rounded-xl border border-line px-3 py-2.5">
           <dt className="text-[0.6875rem] leading-tight text-muted">{it.label}</dt>

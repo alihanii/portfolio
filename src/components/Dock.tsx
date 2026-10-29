@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { accents, applyAccent, read, store, STORAGE } from "@/lib/theme";
 import type { Locale, Resume } from "@/lib/content";
-import { Download, Moon, Palette, Sun } from "./Icons";
+import { Download, Palette } from "./Icons";
 import { asset } from "@/lib/base";
-
-type Theme = "dark" | "light";
 
 /** Remembers where the reader is, so the other language opens at the same spot. */
 export function rememberPosition() {
@@ -25,24 +23,13 @@ export function rememberPosition() {
 }
 
 export default function Dock({ lang, ui, pdf }: { lang: Locale; ui: Resume["ui"]; pdf: string }) {
-  const [theme, setTheme] = useState<Theme>("dark");
   const [accent, setAccent] = useState<string>(accents[0].value);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const t = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-    setTheme(t);
     const a = read(STORAGE.accent);
     if (a) setAccent(a);
   }, []);
-
-  const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.dataset.theme = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "dark" ? "#070505" : "#efe8e2");
-    store(STORAGE.theme, next);
-  };
 
   const pickAccent = (hex: string) => {
     setAccent(hex);
@@ -50,23 +37,21 @@ export default function Dock({ lang, ui, pdf }: { lang: Locale; ui: Resume["ui"]
     store(STORAGE.accent, hex);
   };
 
+  // Close the phone swatch popover on a tap outside it.
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: PointerEvent) => {
+      if (!(e.target as HTMLElement).closest("[data-dock]")) setOpen(false);
+    };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, [open]);
+
   const other: Locale = lang === "fa" ? "en" : "fa";
 
   return (
     <div className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-4" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-      <div className="glass glass-strong flex items-center gap-1 rounded-full p-1.5" role="toolbar" aria-label={`${ui.theme} / ${ui.accent}`}>
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="grid size-11 cursor-pointer place-items-center rounded-full text-fg transition-colors hover:bg-white/10"
-          aria-label={theme === "dark" ? ui.light : ui.dark}
-          title={theme === "dark" ? ui.light : ui.dark}
-        >
-          {theme === "dark" ? <Sun /> : <Moon />}
-        </button>
-
-        <span className="mx-1 h-6 w-px bg-line" aria-hidden="true" />
-
+      <div className="glass glass-strong flex items-center gap-1 rounded-full p-1.5" role="toolbar" aria-label={ui.accent} data-dock>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}

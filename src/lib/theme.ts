@@ -38,4 +38,4 @@ export function read(key: string) {
 }
 
 /* Runs inline in <head> so the saved theme and accent apply before first paint. */
-export const bootScript = `(function(){try{var d=document.documentElement;var t=localStorage.getItem("${STORAGE.theme}");if(t==="light"||t==="dark")d.dataset.theme=t;var a=localStorage.getItem("${STORAGE.accent}");if(a&&/^#[0-9a-f]{6}$/i.test(a)){d.style.setProperty("--accent",a);d.style.setProperty("--accent-rgb",parseInt(a.substr(1,2),16)+" "+parseInt(a.substr(3,2),16)+" "+parseInt(a.substr(5,2),16));}}catch(e){}})();`;
+export const bootScript = `(function(){try{var d=document.documentElement;localStorage.removeItem("${STORAGE.theme}");var a=localStorage.getItem("${STORAGE.accent}");if(a&&/^#[0-9a-f]{6}$/i.test(a)){d.style.setProperty("--accent",a);d.style.setProperty("--accent-rgb",parseInt(a.substr(1,2),16)+" "+parseInt(a.substr(3,2),16)+" "+parseInt(a.substr(5,2),16));}}catch(e){}})();`;

@@ -39,7 +39,7 @@ export default async function LangLayout({ children, params }: { children: React
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   return (
-    <html lang={lang} dir={dirOf(lang)} data-theme="dark" className={`${inter.variable} ${syne.variable} ${vazir.variable}`} suppressHydrationWarning>
+    <html lang={lang} dir={dirOf(lang)} className={`${inter.variable} ${syne.variable} ${vazir.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <link rel="preload" as="image" href={asset("/frames/lg/001.webp")} media="(min-width: 768px)" />

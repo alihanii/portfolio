@@ -9,8 +9,9 @@ import { asset } from "@/lib/base";
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Manifest = { count: number; width: number; height: number };
+type Manifest = { count: number; width: number; height: number; sm?: { count: number; width: number; height: number } };
 type Range = { id: string; start: number; end: number; from: number; to: number };
+type Frame = HTMLImageElement | ImageBitmap;
 
 export type StageDetail = { frame: number; total: number; loaded: number; fps: number };
 
@@ -22,6 +23,10 @@ declare global {
 
 const FOCUS_X = 0.5;
 const FOCUS_Y = 0.38;
+/* Phones keep at most this many decoded frames; the rest stay as compressed blobs. */
+const BITMAP_CACHE = 28;
+
+const frameSize = (f: Frame) => (f instanceof HTMLImageElement ? [f.naturalWidth, f.naturalHeight] : [f.width, f.height]);
 
 export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,19 +36,25 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d", { alpha: false })!;
-    ctx.imageSmoothingQuality = "high";
+    const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    const progressBar = document.querySelector<HTMLElement>("[data-progress]");
     let disposed = false;
 
-    let manifest: Manifest = { count: 120, width: 1280, height: 720 };
-    let images: (HTMLImageElement | null)[] = [];
+    let manifest: Manifest = { count: 120, width: 1920, height: 1080 };
+    let count = 120; // frames in the set this device loads
+    let frames: (Frame | null)[] = [];
+    let blobs: (Blob | null)[] = [];
     let loaded = 0;
-    let current = 0;
-    let lastImg: HTMLImageElement | null = null;
+    let current = 0; // index on the 0..manifest.count-1 scale used by the JSON ranges
+    let lastDrawn: Frame | null = null;
     let ranges: Range[] = [];
+    let maxScroll = 1;
     let fps = 60;
 
-    /* ---------- smooth scroll ---------- */
+    /* ---------- smooth scroll (wheel only; touch keeps native scrolling) ---------- */
+    ScrollTrigger.config({ ignoreMobileResize: true });
     const lenis = reduced ? null : new Lenis({ duration: 1.15, smoothWheel: true, wheelMultiplier: 0.9 });
     if (lenis) {
       window.__lenis = lenis;
@@ -59,66 +70,184 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
     };
     gsap.ticker.add(onFps);
 
-    /* ---------- canvas ---------- */
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(window.innerWidth * dpr);
-      canvas.height = Math.round(window.innerHeight * dpr);
-      draw(current, true);
+    /* ---------- lighting layers, painted into the canvas ----------
+       The accent glow, the accent re-light and the vignette used to be CSS layers with
+       mix-blend-mode over the canvas, which made the browser re-blend the whole screen on
+       every scroll frame. They are now pre-rendered once per size/theme/accent and composited
+       inside the canvas only when the frame changes. */
+    const glowLayer = document.createElement("canvas");
+    const tintLayer = document.createElement("canvas");
+    const vignetteLayer = document.createElement("canvas");
+
+    const buildLayers = () => {
+      const cs = getComputedStyle(root);
+      const accent = cs.getPropertyValue("--accent-rgb").trim().split(/\s+/).join(",") || "239,59,45";
+      const bg = cs.getPropertyValue("--bg-rgb").trim().split(/\s+/).join(",") || "7,5,5";
+      const glow = 0.55;
+      const tint = 0.5;
+      const w = canvas.width;
+      const h = canvas.height;
+      const radial = (c: CanvasRenderingContext2D, cx: number, cy: number, rx: number, ry: number, rgba: string) => {
+        c.save();
+        c.translate(cx * w, cy * h);
+        c.scale(rx * w, ry * h);
+        const g = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+        g.addColorStop(0, rgba);
+        g.addColorStop(1, rgba.replace(/[\d.]+\)$/, "0)"));
+        c.fillStyle = g;
+        c.fillRect(-1, -1, 2, 2);
+        c.restore();
+      };
+      for (const layer of [glowLayer, tintLayer, vignetteLayer]) {
+        layer.width = w;
+        layer.height = h;
+      }
+      const g = glowLayer.getContext("2d")!;
+      g.fillStyle = "#000";
+      g.fillRect(0, 0, w, h);
+      radial(g, 0.22, 0.42, 0.5, 0.65, `rgba(${accent},${glow})`);
+      radial(g, 0.82, 0.28, 0.42, 0.5, `rgba(${accent},${glow * 0.35})`);
+
+      const t = tintLayer.getContext("2d")!;
+      t.clearRect(0, 0, w, h);
+      t.globalAlpha = tint;
+      radial(t, 0.18, 0.45, 0.55, 0.8, `rgba(${accent},1)`);
+      radial(t, 0.85, 0.35, 0.38, 0.6, `rgba(${accent},0.6)`);
+
+      const v = vignetteLayer.getContext("2d")!;
+      v.clearRect(0, 0, w, h);
+      const lin = v.createLinearGradient(0, 0, 0, h);
+      lin.addColorStop(0, `rgba(${bg},0.55)`);
+      lin.addColorStop(0.22, `rgba(${bg},0)`);
+      lin.addColorStop(0.7, `rgba(${bg},0)`);
+      lin.addColorStop(1, `rgba(${bg},0.85)`);
+      v.fillStyle = lin;
+      v.fillRect(0, 0, w, h);
+      {
+        v.save();
+        v.translate(w / 2, h * 0.45);
+        v.scale(w * 0.8, h * 0.7);
+        const rg = v.createRadialGradient(0, 0, 0, 0, 0, 1);
+        rg.addColorStop(0.55, `rgba(${bg},0)`);
+        rg.addColorStop(1, `rgba(${bg},0.7)`);
+        v.fillStyle = rg;
+        v.fillRect(-2, -2, 4, 4);
+        v.restore();
+      }
     };
 
-    const nearestLoaded = (index: number) => {
-      if (images[index]) return images[index];
-      for (let d = 1; d < images.length; d++) {
-        const a = images[index - d];
+    /* ---------- canvas ---------- */
+    let cssW = 0;
+    let cssH = 0;
+    const resize = () => {
+      // The canvas is sized to the large viewport (100lvh), so the mobile URL bar showing or
+      // hiding doesn't change its size; only real size changes reallocate it.
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (w === cssW && Math.abs(h - cssH) < 2) return;
+      cssW = w;
+      cssH = h;
+      // Phone frames are ~900px tall, about 1 source pixel per CSS pixel, so a denser canvas
+      // would only upscale the same pixels at 4x the fill cost.
+      const dpr = mobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.imageSmoothingQuality = "high";
+      buildLayers();
+      draw(true);
+    };
+
+    const toLocal = (i: number) => Math.round((i / Math.max(manifest.count - 1, 1)) * (count - 1));
+
+    const nearest = (index: number) => {
+      if (frames[index]) return frames[index];
+      for (let d = 1; d < count; d++) {
+        const a = frames[index - d];
         if (a) return a;
-        const b = images[index + d];
+        const b = frames[index + d];
         if (b) return b;
       }
       return null;
     };
 
-    // Only touches the canvas when the image on screen actually changes.
-    const draw = (index: number, force = false) => {
-      const img = nearestLoaded(index);
-      if (!img || (img === lastImg && !force)) return;
+    // Only touches the canvas when the frame on screen actually changes.
+    const draw = (force = false) => {
+      const local = toLocal(current);
+      const img = nearest(local);
+      if (!img || (img === lastDrawn && !force)) return;
       const cw = canvas.width;
       const ch = canvas.height;
-      const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-      const w = img.naturalWidth * scale;
-      const h = img.naturalHeight * scale;
+      const [iw, ih] = frameSize(img);
+      const scale = Math.max(cw / iw, ch / ih);
+      const w = iw * scale;
+      const h = ih * scale;
       const x = (cw - w) * FOCUS_X;
       const y = Math.min(0, (ch - h) * FOCUS_Y);
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, cw, ch);
+      ctx.drawImage(glowLayer, 0, 0);
+      ctx.globalCompositeOperation = "screen";
       ctx.drawImage(img, x, y, w, h);
-      lastImg = img;
+      ctx.globalCompositeOperation = "color";
+      ctx.drawImage(tintLayer, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.drawImage(vignetteLayer, 0, 0);
+      lastDrawn = img;
+      if (mobile) prefetch(local);
+    };
+
+    /* ---------- phone frame cache: decode around the current frame, drop the rest ---------- */
+    const decoding = new Set<number>();
+    const order: number[] = [];
+    const prefetch = (center: number) => {
+      for (let d = 0; d <= BITMAP_CACHE / 2; d++) {
+        for (const i of [center + d, center - d]) {
+          if (i < 0 || i >= count || frames[i] || decoding.has(i) || !blobs[i]) continue;
+          decoding.add(i);
+          createImageBitmap(blobs[i]!)
+            .then((bmp) => {
+              decoding.delete(i);
+              if (disposed) return bmp.close();
+              frames[i] = bmp;
+              order.push(i);
+              while (order.length > BITMAP_CACHE) {
+                // Evict the cached frame furthest from the one on screen.
+                const here = toLocal(current);
+                order.sort((a, b) => Math.abs(a - here) - Math.abs(b - here));
+                const out = order.pop()!;
+                const f = frames[out];
+                if (f && f !== lastDrawn && !(f instanceof HTMLImageElement)) f.close();
+                if (f !== lastDrawn) frames[out] = null;
+              }
+              if (Math.abs(i - toLocal(current)) <= 1) draw();
+            })
+            .catch(() => decoding.delete(i));
+        }
+      }
     };
 
     const emit = () => {
       window.dispatchEvent(
-        new CustomEvent<StageDetail>("stage:frame", { detail: { frame: current, total: manifest.count, loaded, fps } }),
+        new CustomEvent<StageDetail>("stage:frame", { detail: { frame: current, total: manifest.count, loaded: Math.round((loaded / count) * manifest.count), fps } }),
       );
     };
 
     /* ---------- scroll position -> frame ---------- */
     const measure = () => {
       const vh = window.innerHeight;
-      const max = ScrollTrigger.maxScroll(window);
+      maxScroll = ScrollTrigger.maxScroll(window) || 1;
       const els = Array.from(document.querySelectorAll<HTMLElement>("[data-frames]"));
       ranges = els.map((el, i) => {
         const [from, to] = el.dataset.frames!.split(",").map(Number);
         const top = el.getBoundingClientRect().top + window.scrollY;
         const start = i === 0 ? 0 : top - vh / 2;
-        const end = i === els.length - 1 ? max : top + el.offsetHeight - vh / 2;
+        const end = i === els.length - 1 ? maxScroll : top + el.offsetHeight - vh / 2;
         return { id: el.id, start, end: Math.max(end, start + 1), from, to };
       });
     };
 
     let activeId = "";
     const update = (scrollY: number) => {
-      const max = ScrollTrigger.maxScroll(window) || 1;
-      document.documentElement.style.setProperty("--progress", String(Math.min(1, scrollY / max)));
+      // Writes only; everything it needs was measured on refresh, so scrolling never forces layout.
+      if (progressBar) progressBar.style.transform = `scaleX(${Math.min(1, scrollY / maxScroll)})`;
       if (!ranges.length) return;
       let r = ranges[ranges.length - 1];
       for (const range of ranges) {
@@ -128,9 +257,8 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
         }
       }
       const t = gsap.utils.clamp(0, 1, (scrollY - r.start) / (r.end - r.start));
-      const frame = Math.round(gsap.utils.clamp(0, manifest.count - 1, r.from + (r.to - r.from) * t));
-      current = frame;
-      draw(frame);
+      current = Math.round(gsap.utils.clamp(0, manifest.count - 1, r.from + (r.to - r.from) * t));
+      draw();
       if (r.id !== activeId) {
         activeId = r.id;
         document.querySelectorAll<HTMLElement>("[data-nav]").forEach((a) => {
@@ -151,15 +279,22 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
       },
     });
 
+    /* ---------- accent changes re-light the canvas ---------- */
+    const themeObserver = new MutationObserver(() => {
+      buildLayers();
+      draw(true);
+    });
+    themeObserver.observe(root, { attributes: true, attributeFilter: ["style"] });
+
     /* ---------- reveal ---------- */
     let revealCtx: gsap.Context | null = null;
     if (!reduced) {
       revealCtx = gsap.context(() => {
-        gsap.set("[data-reveal]", { autoAlpha: 0, y: 40 });
+        gsap.set("[data-reveal]", { autoAlpha: 0, y: mobile ? 24 : 40 });
         ScrollTrigger.batch("[data-reveal]", {
-          start: "top 88%",
+          start: "top 90%",
           onEnter: (batch) =>
-            gsap.to(batch, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.08, overwrite: true }),
+            gsap.to(batch, { autoAlpha: 1, y: 0, duration: mobile ? 0.6 : 0.9, ease: "power3.out", stagger: 0.08, overwrite: true }),
         });
       });
     }
@@ -198,51 +333,81 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
         const res = await fetch(asset("/frames/manifest.json"));
         if (res.ok) manifest = await res.json();
       } catch {}
-      images = new Array(manifest.count).fill(null);
-      const size = window.innerWidth < 768 ? "sm" : "lg";
+      const size = mobile && manifest.sm ? "sm" : "lg";
+      count = size === "sm" ? manifest.sm!.count : manifest.count;
+      frames = new Array(count).fill(null);
+      blobs = new Array(count).fill(null);
       const src = (i: number) => asset(`/frames/${size}/${String(i + 1).padStart(3, "0")}.webp`);
 
-      const loadOne = (i: number) =>
+      const done = () => {
+        loaded++;
+        setProgress(loaded / count);
+      };
+
+      // Desktop: <img> elements, decoded off the main thread before first use.
+      const loadImage = (i: number) =>
         new Promise<void>((resolve) => {
           const img = new Image();
           img.decoding = "async";
-          img.onload = () => {
-            images[i] = img;
-            loaded++;
-            setProgress(loaded / manifest.count);
-            draw(current);
-            resolve();
-          };
-          img.onerror = () => resolve();
           img.src = src(i);
+          img
+            .decode()
+            .then(() => {
+              frames[i] = img;
+              done();
+              if (Math.abs(i - toLocal(current)) <= 2) draw();
+            })
+            .catch(() => {})
+            .finally(resolve);
         });
 
+      // Phones: keep the compressed file, decode into a bitmap only near the current frame.
+      const loadBlob = async (i: number) => {
+        try {
+          const res = await fetch(src(i));
+          if (!res.ok) return;
+          blobs[i] = await res.blob();
+          done();
+          if (Math.abs(i - toLocal(current)) <= BITMAP_CACHE / 2) prefetch(toLocal(current));
+        } catch {}
+      };
+
+      const loadOne = size === "sm" ? loadBlob : loadImage;
+
       await loadOne(0);
+      if (size === "sm" && blobs[0]) {
+        frames[0] = await createImageBitmap(blobs[0]);
+        order.push(0);
+      }
       if (disposed) return;
       resize();
       ScrollTrigger.refresh();
       restore();
+      draw(true);
       setReady(true);
 
       // Load the rest in order of distance from the frame that is on screen.
-      const queue = Array.from({ length: manifest.count - 1 }, (_, k) => k + 1).sort(
-        (a, b) => Math.abs(a - current) - Math.abs(b - current),
-      );
-      const workers = Array.from({ length: 6 }, async () => {
+      const here = toLocal(current);
+      const queue = Array.from({ length: count - 1 }, (_, k) => k + 1).sort((a, b) => Math.abs(a - here) - Math.abs(b - here));
+      const workers = Array.from({ length: mobile ? 4 : 6 }, async () => {
         while (queue.length && !disposed) await loadOne(queue.shift()!);
       });
       await Promise.all(workers);
       emit();
     };
 
+    const ro = new ResizeObserver(() => {
+      resize();
+    });
+    ro.observe(canvas);
     resize();
-    window.addEventListener("resize", resize);
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     load();
 
     return () => {
       disposed = true;
-      window.removeEventListener("resize", resize);
+      ro.disconnect();
+      themeObserver.disconnect();
       document.removeEventListener("click", onClick);
       gsap.ticker.remove(tick);
       gsap.ticker.remove(onFps);
@@ -250,6 +415,7 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
       revealCtx?.revert();
       lenis?.destroy();
       delete window.__lenis;
+      for (const f of frames) if (f && !(f instanceof HTMLImageElement)) f.close();
     };
   }, []);
 
@@ -258,10 +424,7 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
   return (
     <>
       <div className="stage" aria-hidden="true">
-        <div className="stage-glow" />
         <canvas ref={canvasRef} className="stage-canvas" data-ready={ready} />
-        <div className="stage-tint" />
-        <div className="stage-vignette" />
         <div className="stage-grain" />
       </div>
       <div
