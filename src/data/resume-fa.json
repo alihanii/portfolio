@@ -11,7 +11,13 @@
     "pdf": "/resume-alihani.pdf"
   },
   "ui": {
-    "nav": { "about": "درباره من", "experience": "سوابق", "stack": "مهارت‌ها", "projects": "پروژه‌ها", "contact": "تماس" },
+    "nav": {
+      "about": "درباره من",
+      "experience": "سوابق",
+      "stack": "مهارت‌ها",
+      "projects": "پروژه‌ها",
+      "contact": "تماس"
+    },
     "downloadCv": "دانلود رزومه",
     "letsTalk": "بیا صحبت کنیم",
     "theme": "تم",
@@ -29,27 +35,80 @@
     "fps": "FPS",
     "loaded": "فریم‌های لود شده",
     "skip": "رفتن به محتوا",
-    "footer": "طراحی و توسعه توسط علی هانی. Next.js، GSAP، Lenis و یک کانواس ۱۲۰ فریمی."
+    "footer": "طراحی و توسعه توسط علی هانی.",
+    "features": "ویژگی‌های کلیدی"
   },
   "sections": [
-    { "id": "hero", "frames": [0, 22] },
-    { "id": "about", "frames": [22, 46] },
-    { "id": "experience", "frames": [46, 76] },
-    { "id": "stack", "frames": [76, 94] },
-    { "id": "projects", "frames": [94, 108] },
-    { "id": "contact", "frames": [108, 119] }
+    {
+      "id": "hero",
+      "frames": [
+        0,
+        22
+      ]
+    },
+    {
+      "id": "about",
+      "frames": [
+        22,
+        46
+      ]
+    },
+    {
+      "id": "experience",
+      "frames": [
+        46,
+        76
+      ]
+    },
+    {
+      "id": "stack",
+      "frames": [
+        76,
+        94
+      ]
+    },
+    {
+      "id": "projects",
+      "frames": [
+        94,
+        108
+      ]
+    },
+    {
+      "id": "contact",
+      "frames": [
+        108,
+        119
+      ]
+    }
   ],
   "hero": {
     "eyebrow": "سلام، من علی‌ام",
     "line1": "توسعه‌دهنده",
     "line2": "فرانت‌اند",
     "tagline": "رابط‌هایی که حس خوبشون به اندازه کارکردشونه: سریع، در دسترس و آماده رشد.",
-    "points": ["Vue · Nuxt · React · Next", "PWA، SSR/SSG و Core Web Vitals", "دیزاین سیستم و Monorepo"],
+    "points": [
+      "Vue · Nuxt · React · Next",
+      "PWA، SSR/SSG و Core Web Vitals",
+      "دیزاین سیستم و Monorepo"
+    ],
     "stats": [
-      { "value": "+۳", "label": "سال ساخت اپلیکیشن‌های وب در محیط واقعی" },
-      { "value": "۲", "label": "تیم محصول، PaaS / SaaS و لجستیک" },
-      { "value": "+۲۰", "label": "ابزار و تکنولوژی در کار روزانه" },
-      { "value": "FA/EN", "label": "چندزبانه و RTL، اصولی و تمیز" }
+      {
+        "value": "+۳",
+        "label": "سال ساخت اپلیکیشن‌های وب در محیط واقعی"
+      },
+      {
+        "value": "۲",
+        "label": "تیم محصول، PaaS / SaaS و لجستیک"
+      },
+      {
+        "value": "+۲۰",
+        "label": "ابزار و تکنولوژی در کار روزانه"
+      },
+      {
+        "value": "FA/EN",
+        "label": "چندزبانه و RTL، اصولی و تمیز"
+      }
     ]
   },
   "about": {
@@ -57,9 +116,18 @@
     "title": "درباره من",
     "body": "توسعه‌دهنده فرانت‌اند با بیش از ۳ سال تجربه در طراحی، توسعه و نگهداری اپلیکیشن‌های تحت وب در مقیاس سازمانی؛ مسلط به React.js، Vue.js و TypeScript با تجربه عملی SSR/SSG در Next.js و Nuxt.js.",
     "highlights": [
-      { "title": "مالکیت فنی", "text": "مسئولیت کامل فرانت‌اند محصول و حرکت به سمت نقش Engineering Manager." },
-      { "title": "اول پرفورمنس", "text": "SEO، Core Web Vitals، سرویس‌ورکر و کش هوشمند بخشی از کاره، نه کار اضافه." },
-      { "title": "نگاه سیستمی", "text": "دیزاین سیستم، Storybook و Monorepo برای اینکه کدبیس‌های بزرگ آروم بمونن." }
+      {
+        "title": "مالکیت فنی",
+        "text": "مسئولیت کامل فرانت‌اند محصول و حرکت به سمت نقش Engineering Manager."
+      },
+      {
+        "title": "اول پرفورمنس",
+        "text": "SEO، Core Web Vitals، سرویس‌ورکر و کش هوشمند بخشی از کاره، نه کار اضافه."
+      },
+      {
+        "title": "نگاه سیستمی",
+        "text": "دیزاین سیستم، Storybook و Monorepo برای اینکه کدبیس‌های بزرگ آروم بمونن."
+      }
     ]
   },
   "experience": {
@@ -79,7 +147,14 @@
           "مسئول بهبود SEO و شاخص‌های Core Web Vitals؛ پیاده‌سازی و تحلیل داده‌های آنالیتیکس به‌عنوان ورودی تصمیم‌گیری‌های محصول‌محور.",
           "مشارکت در طراحی و توسعه راهکارهای مبتنی بر AI برای ساده‌سازی فرایندهای مدیریتی و بهبود تجربه کاربری."
         ],
-        "tags": ["Vue.js", "Nuxt.js", "PWA", "Sentry", "PostHog", "TanStack Query"]
+        "tags": [
+          "Vue.js",
+          "Nuxt.js",
+          "PWA",
+          "Sentry",
+          "PostHog",
+          "TanStack Query"
+        ]
       },
       {
         "company": "دنیای فناوری آراد (آراد کلود)",
@@ -94,7 +169,14 @@
           "همکاری نزدیک با تیم‌های محصول و بک‌اند در محیط Agile/Scrum با نرخ تغییرات بالا و Jira.",
           "استفاده از دیزاین سیستم و برنامه‌نویسی شیءگرا (OOP) برای کنترل پیچیدگی کد فرانت؛ پیاده‌سازی i18n برای رابط کاربری چندزبانه."
         ],
-        "tags": ["TypeScript", "Nuxt.js", "Cypress", "Storybook", "Monorepo", "i18n"]
+        "tags": [
+          "TypeScript",
+          "Nuxt.js",
+          "Cypress",
+          "Storybook",
+          "Monorepo",
+          "i18n"
+        ]
       }
     ]
   },
@@ -102,31 +184,140 @@
     "index": "۰۳",
     "title": "مهارت‌های فنی",
     "groups": [
-      { "name": "زبان‌ها و فریم‌ورک‌ها", "items": ["JavaScript (ES6+)", "TypeScript", "React.js", "Next.js", "Vue.js", "Nuxt.js"] },
-      { "name": "رابط کاربری", "items": ["Tailwind CSS", "HTML5", "CSS3", "Responsive Design", "i18n / RTL", "PWA"] },
-      { "name": "داده و کیفیت", "items": ["TanStack Query", "Axios", "Cypress", "Sentry", "PostHog", "Storybook"] },
-      { "name": "ابزارها", "items": ["Git", "GitFlow", "Figma", "Vite", "Webpack", "Docker"] }
+      {
+        "name": "زبان‌ها و فریم‌ورک‌ها",
+        "items": [
+          "JavaScript (ES6+)",
+          "TypeScript",
+          "React.js",
+          "Next.js",
+          "Vue.js",
+          "Nuxt.js"
+        ]
+      },
+      {
+        "name": "رابط کاربری",
+        "items": [
+          "Tailwind CSS",
+          "HTML5",
+          "CSS3",
+          "Responsive Design",
+          "i18n / RTL",
+          "PWA"
+        ]
+      },
+      {
+        "name": "داده و کیفیت",
+        "items": [
+          "TanStack Query",
+          "Axios",
+          "Cypress",
+          "Sentry",
+          "PostHog",
+          "Storybook"
+        ]
+      },
+      {
+        "name": "ابزارها",
+        "items": [
+          "Git",
+          "GitFlow",
+          "Figma",
+          "Vite",
+          "Webpack",
+          "Docker"
+        ]
+      }
     ],
     "softTitle": "مهارت‌های نرم",
-    "soft": ["هدایت فنی تیم و مسئولیت‌های Engineering Management", "تعامل مؤثر با تیم‌های محصول، طراحی و بک‌اند", "مستندسازی و انتقال دانش فنی به تیم", "یادگیری مستمر فناوری‌های روز فرانت‌اند"]
+    "soft": [
+      "هدایت فنی تیم و مسئولیت‌های Engineering Management",
+      "تعامل مؤثر با تیم‌های محصول، طراحی و بک‌اند",
+      "مستندسازی و انتقال دانش فنی به تیم",
+      "یادگیری مستمر فناوری‌های روز فرانت‌اند"
+    ]
   },
   "projects": {
     "index": "۰۴",
     "title": "کارهای برگزیده",
     "items": [
       {
-        "name": "فروشگاه اینترنتی ابرا",
-        "description": "طراحی سامانه فروشگاهی پیشرفته با React.js و Next.js.",
-        "tags": ["React.js", "Next.js"],
-        "url": "https://github.com/alihanii/abra-front",
-        "linkLabel": "github.com/alihanii/abra-front"
+        "name": "PC Seller",
+        "description": "فروشگاه اینترنتی قطعات و سیستم‌های کامپیوتری.",
+        "tags": [
+          "Front-end",
+          "E-commerce"
+        ],
+        "features": [],
+        "url": "http://109.94.165.195:8090/",
+        "linkLabel": "109.94.165.195:8090",
+        "image": "/projects/pc-seller.jpg",
+        "live": "مشاهده نسخه زنده"
+      },
+      {
+        "name": "PWA محصول آمادست",
+        "description": "نسخه PWA محصول آمادست با تمرکز روی سرعت، دسترسی آفلاین و داده‌محور بودن تصمیم‌ها.",
+        "tags": [
+          "Nuxt.js",
+          "Vue.js",
+          "PWA",
+          "TanStack Query"
+        ],
+        "features": [
+          "Service Worker و استراتژی‌های کش هوشمند برای لود سریع و حالت آفلاین",
+          "Push Notification",
+          "مانیتورینگ خطا و Session با Sentry",
+          "Event Tracking و تحلیل رفتار کاربر با PostHog",
+          "سرویس لجستیک محصول",
+          "بهینه‌سازی SEO و Core Web Vitals"
+        ],
+        "url": "",
+        "linkLabel": "",
+        "image": "",
+        "live": ""
+      },
+      {
+        "name": "پنل ابری آراد کلود",
+        "description": "محصولات ابری PaaS و SaaS به‌همراه دیزاین سیستم اختصاصی تیم.",
+        "tags": [
+          "Vue.js",
+          "Nuxt.js",
+          "TypeScript",
+          "Storybook"
+        ],
+        "features": [
+          "دیزاین سیستم اختصاصی با مستندات کامل در Storybook",
+          "معماری Monorepo برای چند پکیج و اپلیکیشن",
+          "تست End-to-End با Cypress",
+          "مدیریت داده سرور با TanStack Query",
+          "رابط چندزبانه با i18n",
+          "پایش پایداری با Sentry"
+        ],
+        "url": "",
+        "linkLabel": "",
+        "image": "",
+        "live": ""
       },
       {
         "name": "همین پورتفولیو",
-        "description": "کانواس اسکرول‌محور با ۱۲۰ فریم WebP، اسکرول نرم با Lenis، GSAP ScrollTrigger، تغییر زنده تم با متغیرهای CSS و چیدمان قرینه فارسی/انگلیسی.",
-        "tags": ["Next.js", "GSAP", "Lenis", "Canvas"],
-        "url": "https://github.com/alihanii",
-        "linkLabel": "github.com/alihanii"
+        "description": "پورتفولیوی دوزبانه با صورتی که با اسکرول حرکت می‌کنه.",
+        "tags": [
+          "Next.js",
+          "GSAP",
+          "Lenis",
+          "Canvas"
+        ],
+        "features": [
+          "اسکرول نرم با Lenis و همگام با GSAP ScrollTrigger",
+          "پخش ۱۲۰ فریم WebP روی Canvas بدون افت فریم",
+          "تغییر زنده تم و رنگ اصلی با متغیرهای CSS",
+          "چیدمان قرینه فارسی/انگلیسی (RTL/LTR) با پراپرتی‌های منطقی",
+          "خروجی استاتیک Next.js و پایپلاین PDF به JSON"
+        ],
+        "url": "https://github.com/alihanii/portfolio",
+        "linkLabel": "github.com/alihanii/portfolio",
+        "image": "",
+        "live": ""
       }
     ],
     "craft": [

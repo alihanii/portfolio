@@ -30,6 +30,7 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d", { alpha: false })!;
+    ctx.imageSmoothingQuality = "high";
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let disposed = false;
 

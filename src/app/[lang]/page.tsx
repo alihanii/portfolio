@@ -18,6 +18,71 @@ function SectionHead({ index, title, id }: { index: string; title: string; id: s
   );
 }
 
+type Project = ReturnType<typeof getResume>["projects"]["items"][number];
+
+function ProjectCard({ p, head, featuresLabel }: { p: Project; head?: React.ReactNode; featuresLabel: string }) {
+  const body = (
+    <>
+      {head}
+      {p.image && (
+        <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl border border-line">
+          <div
+            className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
+            style={{
+              background: `url(${p.image}) top center / cover no-repeat, linear-gradient(135deg, rgb(var(--accent-rgb) / 0.35), rgb(var(--bg-rgb) / 0.7))`,
+            }}
+            role="img"
+            aria-label={p.name}
+          />
+          <span className="chip absolute bottom-3 start-3 gap-1.5 bg-black/50 text-white backdrop-blur-md">
+            <span className="dot-accent size-1.5" aria-hidden="true" />
+            {p.live}
+          </span>
+        </div>
+      )}
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="font-display text-xl font-bold">{p.name}</h3>
+        {p.url && (
+          <span className="accent-text transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100">
+            <ArrowUpRight />
+          </span>
+        )}
+      </div>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{p.description}</p>
+      {p.features.length > 0 && (
+        <>
+          <h4 className="eyebrow mb-2 mt-4">{featuresLabel}</h4>
+          <ul className="space-y-1.5 text-sm leading-relaxed">
+            {p.features.map((f) => (
+              <li key={f} className="flex gap-2.5">
+                <span className="mt-2 size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        {p.tags.map((t) => (
+          <span key={t} className="chip">
+            {t}
+          </span>
+        ))}
+      </div>
+      {p.linkLabel && <p className="ltr mt-4 text-xs text-muted">{p.linkLabel}</p>}
+    </>
+  );
+  return p.url ? (
+    <a href={p.url} target="_blank" rel="noopener noreferrer" className="glass group block p-6" data-reveal>
+      {body}
+    </a>
+  ) : (
+    <article className="glass p-6" data-reveal>
+      {body}
+    </article>
+  );
+}
+
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang: raw } = await params;
   const lang = (isLocale(raw) ? raw : "fa") as Locale;
@@ -142,7 +207,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             {r.experience.items.map((job, i) => (
               <article
                 key={job.company}
-                className={`glass p-6 md:p-7 ${i % 2 === 0 ? "md:col-span-5 lg:col-span-4" : "md:col-span-5 md:col-start-8 md:mt-[70vh] lg:col-span-4 lg:col-start-9"}`}
+                className={`glass p-6 md:self-start md:p-7 ${i % 2 === 0 ? "md:col-span-5 lg:col-span-4" : "md:col-span-5 md:col-start-8 md:mt-[70vh] lg:col-span-4 lg:col-start-9"}`}
                 data-reveal
               >
                 {i === 0 && <SectionHead index={r.experience.index} title={r.experience.title} id="experience-title" />}
@@ -232,46 +297,38 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
         </section>
 
         {/* ---------- projects ---------- */}
-        <section id="projects" tabIndex={-1} data-frames={frames(r, "projects")} aria-labelledby="projects-title" className="min-h-[120vh] py-[12vh] outline-none">
+        <section id="projects" tabIndex={-1} data-frames={frames(r, "projects")} aria-labelledby="projects-title" className="min-h-[160vh] py-[12vh] outline-none">
           <div className="grid gap-[30vh] md:grid-cols-12 md:gap-6">
             <div className="space-y-3 md:col-span-5 lg:col-span-4">
-              {r.projects.items.map((p, i) => (
-                <a key={p.name} href={p.url} target="_blank" rel="noreferrer" className="glass group block p-6" data-reveal>
-                  {i === 0 && <SectionHead index={r.projects.index} title={r.projects.title} id="projects-title" />}
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-display text-xl font-bold">{p.name}</h3>
-                    <span className="accent-text transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100">
-                      <ArrowUpRight />
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{p.description}</p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {p.tags.map((t) => (
-                      <span key={t} className="chip">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="ltr mt-4 text-xs text-muted">{p.linkLabel}</p>
-                </a>
-              ))}
-            </div>
-            <div className="glass self-end p-6 md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9" data-reveal>
-              <h3 className="mb-4 flex items-center gap-2 font-display text-lg font-bold">
-                <span className="accent-text">
-                  <Spark />
-                </span>
-                {ui.underTheHood}
-              </h3>
-              <LiveStats labels={{ frame: ui.frame, fps: ui.fps, loaded: ui.loaded }} locale={lang === "fa" ? "fa-IR" : "en-US"} />
-              <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-                {r.projects.craft.map((c) => (
-                  <li key={c} className="flex gap-2.5">
-                    <span className="mt-2 size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
-                    {c}
-                  </li>
+              {r.projects.items
+                .filter((_, i) => i % 2 === 0)
+                .map((p, i) => (
+                  <ProjectCard key={p.name} p={p} featuresLabel={ui.features} head={i === 0 ? <SectionHead index={r.projects.index} title={r.projects.title} id="projects-title" /> : null} />
                 ))}
-              </ul>
+            </div>
+            <div className="space-y-3 md:col-span-5 md:col-start-8 md:mt-[45vh] lg:col-span-4 lg:col-start-9">
+              {r.projects.items
+                .filter((_, i) => i % 2 === 1)
+                .map((p) => (
+                  <ProjectCard key={p.name} p={p} featuresLabel={ui.features} />
+                ))}
+              <div className="glass p-6" data-reveal>
+                <h3 className="mb-4 flex items-center gap-2 font-display text-lg font-bold">
+                  <span className="accent-text">
+                    <Spark />
+                  </span>
+                  {ui.underTheHood}
+                </h3>
+                <LiveStats labels={{ frame: ui.frame, fps: ui.fps, loaded: ui.loaded }} locale={lang === "fa" ? "fa-IR" : "en-US"} />
+                <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
+                  {r.projects.craft.map((c) => (
+                    <li key={c} className="flex gap-2.5">
+                      <span className="mt-2 size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>

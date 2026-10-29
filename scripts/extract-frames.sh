@@ -13,11 +13,14 @@ FPS=$(awk -v n="$COUNT" -v d="$DURATION" 'BEGIN { printf "%.4f", n / d }')
 rm -rf "$OUT/lg" "$OUT/sm"
 mkdir -p "$OUT/lg" "$OUT/sm"
 
-# lg: desktop / tablet, sm: phones (the canvas crops to cover, so a lighter file is enough)
-ffmpeg -v error -y -i "$SRC" -an -vf "fps=$FPS,scale='min(1600,iw)':-2:flags=lanczos" \
-  -frames:v "$COUNT" -c:v libwebp -quality 74 -compression_level 6 "$OUT/lg/%03d.webp"
-ffmpeg -v error -y -i "$SRC" -an -vf "fps=$FPS,scale=960:-2:flags=lanczos" \
-  -frames:v "$COUNT" -c:v libwebp -quality 70 -compression_level 6 "$OUT/sm/%03d.webp"
+# lg: desktop / retina, sm: phones (the canvas crops to cover, so a lighter file is enough).
+# Light denoise removes video compression blocks before upscaling, unsharp brings back edges.
+CLEAN="hqdn3d=1.5:1.5:3:3"
+SHARP="unsharp=5:5:0.8:5:5:0"
+ffmpeg -v error -y -i "$SRC" -an -vf "fps=$FPS,$CLEAN,scale=1920:-2:flags=lanczos,$SHARP" \
+  -frames:v "$COUNT" -c:v libwebp -quality 88 -compression_level 6 -preset photo "$OUT/lg/%03d.webp"
+ffmpeg -v error -y -i "$SRC" -an -vf "fps=$FPS,$CLEAN,scale=1080:-2:flags=lanczos,$SHARP" \
+  -frames:v "$COUNT" -c:v libwebp -quality 84 -compression_level 6 -preset photo "$OUT/sm/%03d.webp"
 
 ACTUAL=$(ls "$OUT/lg" | wc -l)
 read -r W H < <(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x "$OUT/lg/001.webp" | tr x ' ')

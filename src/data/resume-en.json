@@ -11,7 +11,13 @@
     "pdf": "/resume-alihani.pdf"
   },
   "ui": {
-    "nav": { "about": "About", "experience": "Experience", "stack": "Stack", "projects": "Work", "contact": "Contact" },
+    "nav": {
+      "about": "About",
+      "experience": "Experience",
+      "stack": "Stack",
+      "projects": "Work",
+      "contact": "Contact"
+    },
     "downloadCv": "Download CV",
     "letsTalk": "Let's talk",
     "theme": "Theme",
@@ -29,27 +35,80 @@
     "fps": "FPS",
     "loaded": "Frames loaded",
     "skip": "Skip to content",
-    "footer": "Designed & built by Ali Hani. Next.js, GSAP, Lenis and a canvas of 120 frames."
+    "footer": "Designed & built by Ali Hani.",
+    "features": "Key features"
   },
   "sections": [
-    { "id": "hero", "frames": [0, 22] },
-    { "id": "about", "frames": [22, 46] },
-    { "id": "experience", "frames": [46, 76] },
-    { "id": "stack", "frames": [76, 94] },
-    { "id": "projects", "frames": [94, 108] },
-    { "id": "contact", "frames": [108, 119] }
+    {
+      "id": "hero",
+      "frames": [
+        0,
+        22
+      ]
+    },
+    {
+      "id": "about",
+      "frames": [
+        22,
+        46
+      ]
+    },
+    {
+      "id": "experience",
+      "frames": [
+        46,
+        76
+      ]
+    },
+    {
+      "id": "stack",
+      "frames": [
+        76,
+        94
+      ]
+    },
+    {
+      "id": "projects",
+      "frames": [
+        94,
+        108
+      ]
+    },
+    {
+      "id": "contact",
+      "frames": [
+        108,
+        119
+      ]
+    }
   ],
   "hero": {
     "eyebrow": "Hey, I'm Ali",
     "line1": "Front-End",
     "line2": "Developer",
     "tagline": "Interfaces that feel as good as they work: fast, accessible and built to scale.",
-    "points": ["Vue · Nuxt · React · Next", "PWA, SSR/SSG, Core Web Vitals", "Design systems & monorepos"],
+    "points": [
+      "Vue · Nuxt · React · Next",
+      "PWA, SSR/SSG, Core Web Vitals",
+      "Design systems & monorepos"
+    ],
     "stats": [
-      { "value": "3+", "label": "Years building production web apps" },
-      { "value": "2", "label": "Product teams, PaaS / SaaS & logistics" },
-      { "value": "20+", "label": "Tools & technologies in daily use" },
-      { "value": "FA/EN", "label": "i18n and RTL done right" }
+      {
+        "value": "3+",
+        "label": "Years building production web apps"
+      },
+      {
+        "value": "2",
+        "label": "Product teams, PaaS / SaaS & logistics"
+      },
+      {
+        "value": "20+",
+        "label": "Tools & technologies in daily use"
+      },
+      {
+        "value": "FA/EN",
+        "label": "i18n and RTL done right"
+      }
     ]
   },
   "about": {
@@ -57,9 +116,18 @@
     "title": "About me",
     "body": "Front-end developer with 3+ years of experience designing, building and maintaining enterprise-scale web applications. Fluent in React.js, Vue.js and TypeScript, with hands-on SSR/SSG experience in Next.js and Nuxt.js.",
     "highlights": [
-      { "title": "Technical ownership", "text": "Own the front-end of a product end to end and grow into an engineering-manager role." },
-      { "title": "Performance first", "text": "SEO, Core Web Vitals, service workers and smart caching are part of the job, not an afterthought." },
-      { "title": "Systems thinking", "text": "Design systems, Storybook and monorepos that keep big codebases calm." }
+      {
+        "title": "Technical ownership",
+        "text": "Own the front-end of a product end to end and grow into an engineering-manager role."
+      },
+      {
+        "title": "Performance first",
+        "text": "SEO, Core Web Vitals, service workers and smart caching are part of the job, not an afterthought."
+      },
+      {
+        "title": "Systems thinking",
+        "text": "Design systems, Storybook and monorepos that keep big codebases calm."
+      }
     ]
   },
   "experience": {
@@ -79,7 +147,14 @@
           "Own SEO and Core Web Vitals; implemented and analysed product analytics to drive product decisions.",
           "Contributed to AI-based features that simplify management workflows and improve UX."
         ],
-        "tags": ["Vue.js", "Nuxt.js", "PWA", "Sentry", "PostHog", "TanStack Query"]
+        "tags": [
+          "Vue.js",
+          "Nuxt.js",
+          "PWA",
+          "Sentry",
+          "PostHog",
+          "TanStack Query"
+        ]
       },
       {
         "company": "Arad Technology World (Arad Cloud)",
@@ -94,7 +169,14 @@
           "Worked closely with product and back-end teams in a fast-moving Agile/Scrum setup with Jira.",
           "Used the design system and OOP to tame front-end complexity; shipped i18n for a multilingual UI."
         ],
-        "tags": ["TypeScript", "Nuxt.js", "Cypress", "Storybook", "Monorepo", "i18n"]
+        "tags": [
+          "TypeScript",
+          "Nuxt.js",
+          "Cypress",
+          "Storybook",
+          "Monorepo",
+          "i18n"
+        ]
       }
     ]
   },
@@ -102,31 +184,140 @@
     "index": "03",
     "title": "Tech stack",
     "groups": [
-      { "name": "Languages & frameworks", "items": ["JavaScript (ES6+)", "TypeScript", "React.js", "Next.js", "Vue.js", "Nuxt.js"] },
-      { "name": "UI", "items": ["Tailwind CSS", "HTML5", "CSS3", "Responsive design", "i18n / RTL", "PWA"] },
-      { "name": "Data & quality", "items": ["TanStack Query", "Axios", "Cypress", "Sentry", "PostHog", "Storybook"] },
-      { "name": "Tooling", "items": ["Git", "GitFlow", "Figma", "Vite", "Webpack", "Docker"] }
+      {
+        "name": "Languages & frameworks",
+        "items": [
+          "JavaScript (ES6+)",
+          "TypeScript",
+          "React.js",
+          "Next.js",
+          "Vue.js",
+          "Nuxt.js"
+        ]
+      },
+      {
+        "name": "UI",
+        "items": [
+          "Tailwind CSS",
+          "HTML5",
+          "CSS3",
+          "Responsive design",
+          "i18n / RTL",
+          "PWA"
+        ]
+      },
+      {
+        "name": "Data & quality",
+        "items": [
+          "TanStack Query",
+          "Axios",
+          "Cypress",
+          "Sentry",
+          "PostHog",
+          "Storybook"
+        ]
+      },
+      {
+        "name": "Tooling",
+        "items": [
+          "Git",
+          "GitFlow",
+          "Figma",
+          "Vite",
+          "Webpack",
+          "Docker"
+        ]
+      }
     ],
     "softTitle": "Soft skills",
-    "soft": ["Technical leadership & engineering management", "Working closely with product, design and back-end", "Documentation and knowledge sharing", "Always learning what's next in front-end"]
+    "soft": [
+      "Technical leadership & engineering management",
+      "Working closely with product, design and back-end",
+      "Documentation and knowledge sharing",
+      "Always learning what's next in front-end"
+    ]
   },
   "projects": {
     "index": "04",
     "title": "Selected work",
     "items": [
       {
-        "name": "Abra online store",
-        "description": "An advanced e-commerce front-end built with React.js and Next.js.",
-        "tags": ["React.js", "Next.js"],
-        "url": "https://github.com/alihanii/abra-front",
-        "linkLabel": "github.com/alihanii/abra-front"
+        "name": "PC Seller",
+        "description": "An online store for PC parts and complete systems.",
+        "tags": [
+          "Front-end",
+          "E-commerce"
+        ],
+        "features": [],
+        "url": "http://109.94.165.195:8090/",
+        "linkLabel": "109.94.165.195:8090",
+        "image": "/projects/pc-seller.jpg",
+        "live": "View live site"
+      },
+      {
+        "name": "Amadast product PWA",
+        "description": "The PWA of Amadast's product, built for speed, offline access and data-driven decisions.",
+        "tags": [
+          "Nuxt.js",
+          "Vue.js",
+          "PWA",
+          "TanStack Query"
+        ],
+        "features": [
+          "Service worker and smart caching for fast loads and offline use",
+          "Push notifications",
+          "Error and session monitoring with Sentry",
+          "Event tracking and behaviour analysis with PostHog",
+          "The product's logistics service",
+          "SEO and Core Web Vitals work"
+        ],
+        "url": "",
+        "linkLabel": "",
+        "image": "",
+        "live": ""
+      },
+      {
+        "name": "Arad Cloud console",
+        "description": "PaaS and SaaS cloud products plus the team's own design system.",
+        "tags": [
+          "Vue.js",
+          "Nuxt.js",
+          "TypeScript",
+          "Storybook"
+        ],
+        "features": [
+          "Team design system, fully documented in Storybook",
+          "Monorepo across several packages and apps",
+          "End-to-end tests with Cypress",
+          "Server state with TanStack Query",
+          "Multilingual UI with i18n",
+          "Stability monitoring with Sentry"
+        ],
+        "url": "",
+        "linkLabel": "",
+        "image": "",
+        "live": ""
       },
       {
         "name": "This portfolio",
-        "description": "Scroll-driven canvas of 120 WebP frames, Lenis smooth scroll, GSAP ScrollTrigger, live theming with CSS variables and a mirrored FA/EN layout.",
-        "tags": ["Next.js", "GSAP", "Lenis", "Canvas"],
-        "url": "https://github.com/alihanii",
-        "linkLabel": "github.com/alihanii"
+        "description": "A bilingual portfolio where my face moves with the scroll.",
+        "tags": [
+          "Next.js",
+          "GSAP",
+          "Lenis",
+          "Canvas"
+        ],
+        "features": [
+          "Lenis smooth scroll synced with GSAP ScrollTrigger",
+          "120 WebP frames drawn to a canvas without dropped frames",
+          "Live theme and accent colour through CSS variables",
+          "Mirrored FA/EN (RTL/LTR) layout with logical properties",
+          "Static Next.js export and a PDF-to-JSON pipeline"
+        ],
+        "url": "https://github.com/alihanii/portfolio",
+        "linkLabel": "github.com/alihanii/portfolio",
+        "image": "",
+        "live": ""
       }
     ],
     "craft": [
