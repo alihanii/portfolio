@@ -243,12 +243,22 @@
     "items": [
       {
         "name": "PC Seller",
-        "description": "An online store for PC parts and complete systems.",
+        "description": "A full-stack Persian (RTL) online store for computer parts, with a React storefront and a Django REST API.",
         "tags": [
-          "Front-end",
-          "E-commerce"
+          "React",
+          "TypeScript",
+          "Tailwind CSS",
+          "Django REST Framework",
+          "TanStack Query"
         ],
-        "features": [],
+        "features": [
+          "Mobile OTP login over SMS with JWT",
+          "Product listing with spec filters, brands and search",
+          "Cart, discount codes and shipping methods",
+          "Checkout through Iranian bank gateways",
+          "User profile with orders, addresses and wishlist",
+          "Dark/light theme and Docker deployment"
+        ],
         "url": "http://109.94.165.195:8090/",
         "linkLabel": "109.94.165.195:8090",
         "image": "/projects/pc-seller.jpg",
