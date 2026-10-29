@@ -25,7 +25,7 @@ npm run build      # static site in out/
 | Resume content (one file per language) | `src/data/resume-fa.json`, `src/data/resume-en.json` |
 | Page layout | `src/app/[lang]/page.tsx` |
 
-**Frames.** `public/frames/lg` (desktop, 1280px) and `public/frames/sm` (phones, 960px) hold 120 WebP frames each (1920px / 1080px wide, denoised and sharpened from the source video). The first frame is preloaded, then the rest load in order of distance from the frame on screen. The canvas only redraws when the frame changes.
+**Frames.** `public/frames/lg` (desktop) and `public/frames/sm` (phones) hold 120 WebP frames each (1920px / 1080px wide, denoised and sharpened from the source video). The first frame is preloaded, then the rest load in order of distance from the frame on screen. The canvas only redraws when the frame changes.
 
 **Frame ranges.** Each section in the JSON has `frames: [from, to]`. While the section passes the middle of the viewport, the canvas scrubs through that range. Change the ranges to choose which expression plays with which section.
 
