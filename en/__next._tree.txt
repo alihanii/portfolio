@@ -1,0 +1,10 @@
+:HL["/portfolio/_next/static/chunks/2k0a008y9jqiz.css","style"]
+:HL["/portfolio/_next/static/media/07c7676b89ed2778-s.p.2bn3s6zvc0dyp.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/2b81eeca71e9850c-s.p.3vm0tq4e-zz_5.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/3146272aa7a4924e-s.p.21se6xk6bxqs6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/_next/static/media/413d8ff922cbc3a2-s.p.2avnhkksosb5d.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/portfolio/frames/lg/001.webp","image",{"media":"(min-width: 768px)"}]
+:HL["/portfolio/frames/sm/001.webp","image",{"media":"(max-width: 767px)"}]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":{"n":"lang","t":"d","k":"en","s":[]},"h":65648,"c":"$Q2"}]]
+0:{"b":"NyP0NZhw4sdTCmtPg1lM8","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
