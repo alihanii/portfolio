@@ -207,7 +207,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             {r.experience.items.map((job, i) => (
               <article
                 key={job.company}
-                className={`glass p-6 md:self-start md:p-7 ${i % 2 === 0 ? "md:col-span-5 lg:col-span-4" : "md:col-span-5 md:col-start-8 md:mt-[70vh] lg:col-span-4 lg:col-start-9"}`}
+                className={`glass p-6 md:self-start md:p-7 ${i % 2 === 0 ? "md:col-span-5 md:row-start-1 lg:col-span-4 md:rtl:col-start-8 lg:rtl:col-start-9" : "md:col-span-5 md:col-start-8 md:row-start-1 md:mt-[70vh] lg:col-span-4 lg:col-start-9 md:rtl:col-start-1 lg:rtl:col-start-1"}`}
                 data-reveal
               >
                 {i === 0 && <SectionHead index={r.experience.index} title={r.experience.title} id="experience-title" />}
