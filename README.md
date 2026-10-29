@@ -13,7 +13,7 @@ npm run dev        # http://localhost:3000/fa/
 npm run build      # static site in out/
 ```
 
-`out/` can be hosted anywhere static: Vercel, Netlify, Cloudflare Pages, GitHub Pages (from the domain root).
+`out/` can be hosted anywhere static. Pushes to `main` deploy to GitHub Pages at https://alihanii.github.io/portfolio/ (`.github/workflows/deploy.yml`, built with `NEXT_PUBLIC_BASE_PATH=/portfolio`). On a root domain (Vercel, Netlify, Cloudflare Pages, a custom domain) leave `NEXT_PUBLIC_BASE_PATH` unset.
 
 ## How it works
 

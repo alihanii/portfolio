@@ -1,3 +1,4 @@
+import { asset } from "@/lib/base";
 import { getResume, isLocale, type Locale } from "@/lib/content";
 import ScrollStage from "@/components/ScrollStage";
 import Dock from "@/components/Dock";
@@ -29,7 +30,7 @@ function ProjectCard({ p, head, featuresLabel }: { p: Project; head?: React.Reac
           <div
             className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
             style={{
-              background: `url(${p.image}) top center / cover no-repeat, linear-gradient(135deg, rgb(var(--accent-rgb) / 0.35), rgb(var(--bg-rgb) / 0.7))`,
+              background: `url(${asset(p.image)}) top center / cover no-repeat, linear-gradient(135deg, rgb(var(--accent-rgb) / 0.35), rgb(var(--bg-rgb) / 0.7))`,
             }}
             role="img"
             aria-label={p.name}

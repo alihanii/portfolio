@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { STORAGE } from "@/lib/theme";
+import { asset } from "@/lib/base";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -194,12 +195,12 @@ export default function ScrollStage({ loadingLabel }: { loadingLabel: string }) 
     /* ---------- frames ---------- */
     const load = async () => {
       try {
-        const res = await fetch("/frames/manifest.json");
+        const res = await fetch(asset("/frames/manifest.json"));
         if (res.ok) manifest = await res.json();
       } catch {}
       images = new Array(manifest.count).fill(null);
       const size = window.innerWidth < 768 ? "sm" : "lg";
-      const src = (i: number) => `/frames/${size}/${String(i + 1).padStart(3, "0")}.webp`;
+      const src = (i: number) => asset(`/frames/${size}/${String(i + 1).padStart(3, "0")}.webp`);
 
       const loadOne = (i: number) =>
         new Promise<void>((resolve) => {

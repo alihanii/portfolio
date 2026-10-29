@@ -1,3 +1,4 @@
+import { asset } from "@/lib/base";
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { Inter, Syne, Vazirmatn } from "next/font/google";
@@ -22,8 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title: `${meta.name} | ${meta.title}`,
     description: about.body,
-    alternates: { languages: { fa: "/fa/", en: "/en/" } },
-    openGraph: { title: `${meta.name} | ${meta.title}`, description: about.body, images: ["/og.jpg"] },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+    alternates: { languages: { fa: asset("/fa/"), en: asset("/en/") } },
+    openGraph: { title: `${meta.name} | ${meta.title}`, description: about.body, images: [asset("/og.jpg")] },
   };
 }
 
@@ -40,8 +42,8 @@ export default async function LangLayout({ children, params }: { children: React
     <html lang={lang} dir={dirOf(lang)} data-theme="dark" className={`${inter.variable} ${syne.variable} ${vazir.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
-        <link rel="preload" as="image" href="/frames/lg/001.webp" media="(min-width: 768px)" />
-        <link rel="preload" as="image" href="/frames/sm/001.webp" media="(max-width: 767px)" />
+        <link rel="preload" as="image" href={asset("/frames/lg/001.webp")} media="(min-width: 768px)" />
+        <link rel="preload" as="image" href={asset("/frames/sm/001.webp")} media="(max-width: 767px)" />
       </head>
       <body>{children}</body>
     </html>

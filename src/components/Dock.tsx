@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { accents, applyAccent, read, store, STORAGE } from "@/lib/theme";
 import type { Locale, Resume } from "@/lib/content";
 import { Download, Moon, Palette, Sun } from "./Icons";
+import { asset } from "@/lib/base";
 
 type Theme = "dark" | "light";
 
@@ -114,7 +115,7 @@ export default function Dock({ lang, ui, pdf }: { lang: Locale; ui: Resume["ui"]
         <span className="mx-1 h-6 w-px bg-line" aria-hidden="true" />
 
         <a
-          href={`/${other}/`}
+          href={asset(`/${other}/`)}
           onClick={rememberPosition}
           hrefLang={other}
           className="grid h-11 min-w-11 cursor-pointer place-items-center rounded-full px-3 text-sm font-semibold text-fg transition-colors hover:bg-white/10"
@@ -124,7 +125,7 @@ export default function Dock({ lang, ui, pdf }: { lang: Locale; ui: Resume["ui"]
           {ui.language}
         </a>
 
-        <a href={pdf} download className="btn btn-accent h-11 min-h-0 px-4" aria-label={ui.downloadCv}>
+        <a href={asset(pdf)} download className="btn btn-accent h-11 min-h-0 px-4" aria-label={ui.downloadCv}>
           <Download />
           <span className="hidden sm:inline">{ui.downloadCv}</span>
         </a>
