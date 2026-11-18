@@ -4,3 +4,6 @@ out
 *.tsbuildinfo
 next-env.d.ts
 .env*
+drive/dist
+drive/public/resume-alihani.pdf
+drive/public/projects
