@@ -95,9 +95,11 @@ function setLang(l, fromUser = false) {
   try {
     localStorage.setItem('drive-lang', l);
   } catch {}
-  const u = new URL(location.href);
-  u.searchParams.set('lang', l);
-  history.replaceState(null, '', u);
+  try {
+    const u = new URL(location.href);
+    u.searchParams.set('lang', l);
+    history.replaceState(null, '', u);
+  } catch {}
   gameWorld?.setLang(l);
   ui?.applyText();
   if (fromUser && started) ui.unlock('polyglot');
