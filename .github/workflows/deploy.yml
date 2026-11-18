@@ -24,8 +24,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            drive/package-lock.json
       - run: npm ci
       - run: npm run build
+      # drive-through version, served at /portfolio/drive/
+      - run: npm ci && npm run build
+        working-directory: drive
+      - run: cp -r drive/dist out/drive
       - run: touch out/.nojekyll
       - uses: peaceiris/actions-gh-pages@v4
         with:

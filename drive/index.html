@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>علی هانی · رزومه‌ی رانندگی</title>
+  <meta name="description" content="Seyed Ali Hani, front-end developer. An interactive résumé you drive through, in Persian and English." />
+  <meta name="theme-color" content="#16213b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div id="markers" aria-hidden="true"></div>
+
+  <header class="hud-top">
+    <div class="brand glass">
+      <span class="avatar" aria-hidden="true">AH</span>
+      <span class="brand-text"><strong data-t="name"></strong><small data-t="title"></small></span>
+    </div>
+    <div class="hud-actions">
+      <button class="icon-btn glass" id="btn-map" data-label="map">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="icon-btn glass" id="btn-menu" data-label="menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="toasts" aria-live="polite"></div>
+
+  <button id="prompt" class="glass" hidden>
+    <span class="prompt-dot" aria-hidden="true"></span>
+    <span class="prompt-text"><small data-t="zoneName"></small><strong></strong></span>
+    <kbd class="prompt-key">Enter</kbd>
+  </button>
+
+  <div class="hud-bottom">
+    <div class="keys glass" id="keys-hint"></div>
+    <div class="speedo glass" aria-hidden="true"><strong id="speed">0</strong><small>km/h</small></div>
+  </div>
+
+  <div id="touch" aria-hidden="true">
+    <div class="stick"><div class="knob"></div></div>
+    <div class="touch-btns">
+      <button class="tbtn" id="t-brake"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <button class="tbtn accent" id="t-boost"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+
+  <aside id="panel" class="glass" role="dialog" aria-modal="false" aria-labelledby="panel-title" hidden>
+    <button class="icon-btn close" id="panel-close" data-label="close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div id="panel-body"></div>
+  </aside>
+
+  <div id="map" class="overlay" hidden>
+    <div class="map-card glass" role="dialog" aria-modal="true" aria-labelledby="map-title">
+      <div class="map-head">
+        <h2 id="map-title" data-t="map"></h2>
+        <button class="icon-btn" id="map-close" data-label="close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <canvas id="map-canvas" width="900" height="900"></canvas>
+      <p class="muted" data-t="mapHint"></p>
+    </div>
+  </div>
+
+  <div id="menu" class="overlay" hidden>
+    <div class="menu-card glass" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+      <div class="map-head">
+        <h2 id="menu-title" data-t="menu"></h2>
+        <button class="icon-btn" id="menu-close" data-label="close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="menu-row">
+        <button class="pill" id="m-lang"></button>
+        <button class="pill" id="m-sound"></button>
+        <a class="pill" id="m-cv" download></a>
+        <button class="pill" id="m-reset"></button>
+      </div>
+      <h3 data-t="achievements"></h3>
+      <ul id="ach-list"></ul>
+      <h3 data-t="keysTitle"></h3>
+      <ul id="keys-list" class="keys-list"></ul>
+      <a class="classic-link" id="m-classic" target="_blank" rel="noopener"></a>
+    </div>
+  </div>
+
+  <div id="intro">
+    <div class="intro-card">
+      <p class="eyebrow" data-t="introEyebrow"></p>
+      <h1 data-t="name"></h1>
+      <p class="intro-title" data-t="title"></p>
+      <p class="intro-lead" data-t="introLead"></p>
+      <button class="start" id="start" disabled>
+        <span class="start-ring" aria-hidden="true"></span>
+        <span id="start-label" data-t="loading"></span>
+      </button>
+      <div class="intro-links">
+        <button class="link" id="intro-lang"></button>
+        <span aria-hidden="true">·</span>
+        <a class="link" id="intro-classic" target="_blank" rel="noopener"></a>
+        <span aria-hidden="true">·</span>
+        <a class="link" id="intro-cv" download></a>
+      </div>
+      <ul class="intro-keys keys-list" id="intro-keys"></ul>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">This résumé needs JavaScript. <a href="./resume-alihani.pdf">Download the PDF</a>.</p></noscript>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

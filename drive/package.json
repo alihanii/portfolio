@@ -1,0 +1,19 @@
+{
+  "name": "alihani-drive",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "prepare-assets": "mkdir -p public/projects && cp ../public/resume-alihani.pdf public/ && cp ../public/projects/pc-seller.jpg public/projects/",
+    "dev": "npm run prepare-assets && vite",
+    "build": "npm run prepare-assets && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "cannon-es": "0.20.0",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.8"
+  }
+}
