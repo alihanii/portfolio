@@ -4,6 +4,7 @@ Bilingual (FA RTL / EN LTR) portfolio with a scroll-driven face canvas, frosted 
 
 - **Stack:** Next.js 16 (static export), React 19, Tailwind CSS 4, GSAP ScrollTrigger, Lenis
 - **Routes:** `/fa/`, `/en/` (and `/` picks the saved or browser language)
+- **Drive-through version:** `drive/` (three.js + cannon-es), deployed at https://alihanii.github.io/portfolio/drive/ — see `drive/README.md`
 
 ## Run
 
